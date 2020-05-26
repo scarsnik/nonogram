@@ -1,3 +1,8 @@
+## Nonogram solver
+
+## See https://en.wikipedia.org/wiki/Nonogram
+ 
+
 def main():
 	p = puzzle('sunset')
 	rows = p['rows']
@@ -10,7 +15,9 @@ def puzzle(name):
 	puzzle = {
 		'giraffe': {
 			'rows': [(1,1),(2,1,1,2),(7,),(1,3),(6,),(7,),(8,),(8,),(8,),(4,)],
-			'cols': [(1,),(2,),(8,),(3,6),(8,),(10,),(7,),(2,5),(1,4),(3,)]
+			'cols': [(1,),(2,),(8,),(3,6),(8,),(10,),(7,),(2,5),(1,4),(3,)],
+			'r': '1,1;2,1,1,2;7;1,3;6;7;8;8;4'
+			'c': '1;2;8;3,6;8;10;7;2,5;1,4;3'
 		},
 		'sunset': {
 			'rows': [(1,1,2,1,1),(1,1,2,1),(1,1,2,1),(4,1),(3,),(1,),(1,1),(1,),(1,),(10,)],
@@ -36,6 +43,14 @@ def puzzle(name):
 	}
 	return puzzle[name]
 
+class Grid:
+	def __init__(self, rows, cols):
+		self.rows = parse(rows)
+		self.cols = parse(cols)
+
+	def parse(input):
+
+
 
 def solve(nng):
 	# Mathematical Fill Rows/Cols
@@ -45,30 +60,36 @@ def solve(nng):
 	# Boxes
 	return
 
-def fill_line(line, clue):
-	pass
-
 def fill(nng, isrow):
 	grid = nng.grid
 	size = nng.size
 	
 	for i in range(size):
 		line = nng.rows[i] if isrow else nng.cols[i]
-		total = sum(line)
+		total = sum(line) + len(line) - 1
 		diff = size-total
 		fill = [x-diff for x in line]
+		print(size, line, total, diff, fill)
 		
 		pos = 0
 		for j, v in enumerate(line):
 			pos += v
 			start = pos - fill[j]
+			print(pos, start)
 			for k in range(start, pos):
 				if isrow:
 					grid[i][k] = 1
 				else:
 					grid[k][i] = 1
-			pos += j
+			pos += 1
+			if diff == 0:
+				for k in range(size):
+					if isrow:
+						if grid[i][k] is None: grid[i][k] = 0
+					else:
+						if grid[k][i] is None: grid[k][i] = 0
 	return grid
+
 
 def boxes(nng):
 	pass
